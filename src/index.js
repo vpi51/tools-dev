@@ -1,7 +1,8 @@
 const {getUuid} = require('./uuid');
-const {XHRRequest} = require('./XHR');
+const {request, xhr} = require('./XHR');
 
 module.exports = {
     getUuid,
-    XHRRequest
+    request,
+    xhr
 };

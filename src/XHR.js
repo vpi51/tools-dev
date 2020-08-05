@@ -1,10 +1,25 @@
-/**
- * 常规Ajax请求
- * 需要IE7+
- * 需要Promise支持
- */
+/*
+*
+*
+*   TODO XMLHttpRequest 请求封装
+*
+*   TODO request 直接使用 类似 jQuery ajax
+*
+*   TODO xhr 需要 new 并允许传递 headers、timeout、base、timestamp 参数
+*
+*   headers ==> 请求头参数 object
+*   timeout ==> 请求最大可停留时长 int(ms单位) 默认 10000ms
+*   base ==> 主请求地址，会与 get、post方法中参数 url 进行拼接
+*   timestamp ==> 请求连接的时间戳（强制使服务器认为非同一请求参数） bool
+*
+*
+* */
 
 class XHRRequest {
+    constructor(props) {
+        this.config = props || {};
+    }
+
     get(url = '', params = {}) {
         return new Promise((resolve, reject) => {
             const req = new XMLHttpRequest();
@@ -15,9 +30,9 @@ class XHRRequest {
                 resolve({
                     code : 'N',
                     message : '服务器连接超时！',
-                    err : 'timeout 10s!'
+                    err : `timeout ${this.config.timeout || 10000}ms!`
                 });
-            }, 10000);
+            }, this.config.timeout || 10000);
             let urlData = '';
             if(!!params){
                 // 当 params 参数存在时 那么将 拼接 url
@@ -28,10 +43,29 @@ class XHRRequest {
             }
             if(urlData !== ''){
                 // 当 urlData 不等于 空时 去除 字符串最后一位 & 符号
-                urlData = urlData.substring(0, urlData.length - 1)
+                urlData = urlData.substring(0, urlData.length - 1);
+                url = url + urlData;
             }
 
-            req.open('GET', url + urlData, true);
+            // 若主请求地址存在 那么 将 base 与 url 进行合并
+            if(this.config.base){
+                url = this.config.base + url;
+            }
+
+            // 若 timestamp 存在 为当前请求地址 添加时间戳
+            if(this.config.timestamp){
+                url = url + '&' + 'timestamp=' + new Date().getTime();
+            }
+
+            req.open('GET', url, true);
+
+            // 添加请求头
+            if(this.config && this.config.headers){
+                for(let key in this.config.headers){
+                    req.setRequestHeader(key, this.config.headers[key]);
+                }
+            }
+
             req.send(null);
             req.onload = () => {
                 clearTimeout(timer);
@@ -70,12 +104,32 @@ class XHRRequest {
                 resolve({
                     code : 'N',
                     message : '服务器连接超时！',
-                    err : 'timeout 10s!'
+                    err : `timeout ${this.config.timeout || 10000}ms!`
                 });
-            }, 10000);
+            }, this.config.timeout || 10000);
+
+            // 若主请求地址存在 那么 将 base 与 url 进行合并
+            if(this.config.base){
+                url = this.config.base + url;
+            }
+
+            // 若 timestamp 存在 为当前请求地址 添加时间戳
+            if(this.config.timestamp){
+                url = url + '&' + 'timestamp=' + new Date().getTime();
+            }
+
             req.open("POST", url, true);
+
             // POST方式需要自己设置http的请求头  fromData 格式 若不加 则为 body 格式
             req.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=UTF-8");//普通表单方式
+
+            // 添加请求头
+            if(this.config && this.config.headers){
+                for(let key in this.config.headers){
+                    req.setRequestHeader(key, this.config.headers[key]);
+                }
+            }
+
             // 参数
             let urlData = '';
             if(!!params){
@@ -116,5 +170,6 @@ class XHRRequest {
 }
 
 module.exports = {
-    XHRRequest : new XHRRequest()
+    request : new XHRRequest(),
+    xhr : XHRRequest
 };

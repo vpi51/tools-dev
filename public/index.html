@@ -10,9 +10,19 @@
 </html>
 <script src="./com.tools.js"></script>
 <script>
-    console.log(Tools.getUuid());
+    console.log(Tools);
     async function testA() {
-        console.log(await Tools.XHRRequest.get())
+        console.log(await Tools.request.get())
     }
-    testA()
+    testA();
+    let {xhr} = Tools;
+    let request = new xhr({
+        headers : {token : '123'},
+        base : 'https://haitong.xinyusoft.com/etf/trade',
+        timestamp : true
+    });
+    async function testB() {
+        console.log(await request.get('/order/getTodayOrder/stockNormal', {name :'1323'}))
+    }
+    testB();
 </script>
