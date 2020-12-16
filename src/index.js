@@ -7,7 +7,7 @@ function getTest () {
     return 'test';
 }
 
-console.log('fun', getTest());
+console.log('fun', getTest(), '33333');
 
 module.exports = {
     getUuid,
