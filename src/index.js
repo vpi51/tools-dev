@@ -9,6 +9,8 @@ function getTest () {
 
 console.log('fun', getTest(), '33333');
 
+// test2 合并
+
 module.exports = {
     getUuid,
     request,
