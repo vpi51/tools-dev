@@ -9,6 +9,7 @@ function getTest () {
 
 console.log('fun', getTest(), '33333');
 console.log('这是我新添加在 master 分支上的 log');
+console.log('测试 commit -m 提交命令');
 
 module.exports = {
     getUuid,
