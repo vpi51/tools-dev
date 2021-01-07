@@ -14,3 +14,4 @@ module.exports = {
     request,
     xhr
 };
+console.log('这是我在 test_3 分支中添加的 log');
