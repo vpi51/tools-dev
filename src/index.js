@@ -8,6 +8,7 @@ function getTest () {
 }
 
 console.log('fun', getTest(), '33333');
+console.log('这是我新添加在 master 分支上的 log');
 
 module.exports = {
     getUuid,
